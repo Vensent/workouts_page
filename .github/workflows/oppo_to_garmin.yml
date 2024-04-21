@@ -1,4 +1,4 @@
-name: Strava To Garmin
+name: Oppo To Garmin
 
 on:
   workflow_dispatch:
@@ -17,12 +17,14 @@ on:
       - run_page/keep_sync.py
       - run_page/gpx_sync.py
       - run_page/tcx_sync.py
+      - run_page/tcx_to_garmin_sync.py
       - run_page/garmin_to_strava_sync.py
+      - run_page/oppo_sync.py
       - requirements.txt
 
 env:
   # please change to your own config.
-  RUN_TYPE: strava_to_garmin_all # support strava/nike/garmin/coros/garmin_cn/garmin_sync_cn_global/keep/only_gpx/only_fit/nike_to_strava/strava_to_garmin/strava_to_garmin_cn/garmin_to_strava/garmin_to_strava_cn/codoon, Please change the 'pass' it to your own
+  RUN_TYPE: oppo_to_garmin_all # support strava/nike/garmin/coros/garmin_cn/garmin_sync_cn_global/keep/only_gpx/only_fit/nike_to_strava/strava_to_garmin/strava_to_garmin_cn/garmin_to_strava/garmin_to_strava_cn/codoon, Please change the 'pass' it to your own
   ATHLETE: Vensent Wang
   TITLE: Vensent Wang Workouts Page
   MIN_GRID_DISTANCE: 3 # change min distance here
@@ -52,7 +54,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: sync_strava_to_garmin
+          ref: oppo_to_garmin
 
       - name: Set up Python
         id: setup_python
@@ -157,11 +159,12 @@ jobs:
         run: |
           python run_page/tcx_sync.py
 
-      - name: Run sync Strava to Garmin(Run with strava(or others upload to strava) data backup in Garmin)
-        if: env.RUN_TYPE == 'strava_to_garmin_all'
+      - name: Run sync Oppo to Garmin
+        if: env.RUN_TYPE == 'oppo_to_garmin'
         run: |
-          python run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_SECRET_STRING }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }}
-          python run_page/strava_to_garmin_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_SECRET_STRING_CN }} ${{ secrets.STRAVA_EMAIL }} ${{ secrets.STRAVA_PASSWORD }} --is-cn
+          python run_page/oppo_sync.py ${{ secrets.OPPO_ID }} ${{ secrets.OPPO_CLIENT_SECRET }} ${{ secrets.OPPO_CLIENT_REFRESH_TOKEN }} --with-tcx
+          python run_page/tcx_to_garmin_sync.py ${{ secrets.GARMIN_SECRET_STRING }}
+          python run_page/tcx_to_garmin_sync.py ${{ secrets.GARMIN_SECRET_STRING_CN }} --is-cn
 
       - name: Run sync Strava to Garmin-cn(Run with strava(or others upload to strava) data backup in Garmin-cn)
         if: env.RUN_TYPE == 'strava_to_garmin_cn'
