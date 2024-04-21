@@ -160,7 +160,7 @@ jobs:
           python run_page/tcx_sync.py
 
       - name: Run sync Oppo to Garmin
-        if: env.RUN_TYPE == 'oppo_to_garmin'
+        if: env.RUN_TYPE == 'oppo_to_garmin_all'
         run: |
           python run_page/oppo_sync.py ${{ secrets.OPPO_ID }} ${{ secrets.OPPO_CLIENT_SECRET }} ${{ secrets.OPPO_CLIENT_REFRESH_TOKEN }} --with-tcx
           python run_page/tcx_to_garmin_sync.py ${{ secrets.GARMIN_SECRET_STRING }}
