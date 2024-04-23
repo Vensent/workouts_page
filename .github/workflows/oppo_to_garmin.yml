@@ -3,7 +3,7 @@ name: Oppo To Garmin
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '25 14 * * *'
   push:
     branches:
       - master
